@@ -73,14 +73,40 @@ Boxes = []
 colors = [(92, 115, 130), (255, 255, 255)]
 
 create_grid(Boxes, colors)
+
+current_turn = 'White'
+chosen_piece = 0
+
+
             
 run = True
 while run:
     pygame.display.update()
 
+    mouse_coordinates = pygame.mouse.get_pos()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN and not chosen_piece:
+            for i in Boxes:
+                if mouse_coordinates[0] > i.rect.x and mouse_coordinates[0] < i.rect.x+100 and i.piece:
+                    if mouse_coordinates[1] > i.rect.y and mouse_coordinates[1] < i.rect.y+100:
+                        if chosen_piece:
+                            chosen_piece.color = colors[Boxes.index(chosen_piece)%2-1]
+                        i.color = "Blue"
+                        chosen_piece = i
+        elif event.type == pygame.MOUSEBUTTONDOWN and chosen_piece:
+            for i in Boxes:
+                if mouse_coordinates[0] > i.rect.x and mouse_coordinates[0] < i.rect.x+100:
+                    if mouse_coordinates[1] > i.rect.y and mouse_coordinates[1] < i.rect.y+100:
+                        i.piece = chosen_piece.piece
+                        chosen_piece.color = colors[Boxes.index(chosen_piece)%2-1]
+                        chosen_piece.piece = 0
+                        chosen_piece = 0
+                        break
+
 
 
 
@@ -92,3 +118,5 @@ while run:
 
     for one in Boxes:
         one.draw()
+
+    print(chosen_piece)
